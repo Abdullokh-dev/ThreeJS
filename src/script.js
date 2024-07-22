@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
@@ -11,9 +12,6 @@ const scene = new THREE.Scene();
  */
 
 const group = new THREE.Group();
-group.position.y = 1;
-group.scale.y = 1.5;
-group.rotation.y = 1;
 scene.add(group);
 
 const cube1 = new THREE.Mesh(
@@ -22,24 +20,6 @@ const cube1 = new THREE.Mesh(
 );
 
 group.add(cube1);
-
-const cube2 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 'green' }),
-);
-
-group.add(cube2);
-
-cube2.position.x =  -2;
-
-const cube3 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 'blue' }),
-);
-
-group.add(cube3);
-
-cube3.position.x =  2;
 
 // Axes helper
 const axesHelper = new THREE.AxesHelper();
@@ -68,3 +48,25 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height);
 renderer.render(scene, camera);
+
+// Clock
+// let clock = new THREE.Clock();
+
+gsap.to(cube1.position, { duration: 1, delay: 1, x: 2 });
+gsap.to(cube1.position, { duration: 1, delay: 2, x: 0 });
+
+// Animation
+const tick = () => {
+    // Clock
+    // let elapsedTime = clock.getElapsedTime();
+
+    // Update objects
+    // cube1.position.y = Math.sin(elapsedTime);
+
+    // Render
+    renderer.render(scene, camera);
+
+    window.requestAnimationFrame(tick);
+}
+
+tick();
