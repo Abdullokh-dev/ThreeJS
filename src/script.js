@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import {BufferGeometry} from "three";
 
 /**
  * Base
@@ -10,11 +11,23 @@ const canvas = document.querySelector('canvas.webgl');
 // Scene
 const scene = new THREE.Scene();
 
+const count = 5000;
+
+const positionsArray = new Float32Array(count * 3 * 3);
+
+for(let i = 0; i < count * 3 * 3; i++) {
+    positionsArray[i] = (Math.random() - 0.5) * 4;
+}
+
+const positionAttribute = new THREE.BufferAttribute(positionsArray, 3)
+
+const geometry = new BufferGeometry();
+geometry.setAttribute('position', positionAttribute);
+const material = new THREE.MeshBasicMaterial({color: 'red', wireframe: true})
+
 // Object
-const mesh = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1, 5, 5, 5),
-    new THREE.MeshBasicMaterial({ color: 'red' })
-)
+const mesh = new THREE.Mesh(geometry, material);
+
 scene.add(mesh);
 
 // Sizes
@@ -62,9 +75,9 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// Axes helper
-const axesHelper = new THREE.AxesHelper();
-scene.add(axesHelper);
+// // Axes helper
+// const axesHelper = new THREE.AxesHelper();
+// scene.add(axesHelper);
 
 // Animate
 let clock = new THREE.Clock();
