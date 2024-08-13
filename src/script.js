@@ -1,6 +1,28 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import {BufferGeometry} from "three";
+import {BoxGeometry} from "three";
+import {gsap} from "gsap";
+import GUI from 'lil-gui';
+
+/**
+ * Debug
+ */
+const gui = new GUI({
+    width: 300,
+    title: 'Nice debug UI',
+    closeFolders: false,
+});
+
+// gui.close();
+// gui.hide();
+
+window.addEventListener('keydown', (event) => {
+    if ( event.key == 'h' ) {
+        gui.show(gui._hidden);
+    }
+})
+
+const debugObject = {};
 
 /**
  * Base
@@ -11,24 +33,34 @@ const canvas = document.querySelector('canvas.webgl');
 // Scene
 const scene = new THREE.Scene();
 
-const count = 5000;
+// Object
+debugObject.color = '#43731c';
 
-const positionsArray = new Float32Array(count * 3 * 3);
+const geometry = new BoxGeometry(1, 1,1, 1);
+const material = new THREE.MeshBasicMaterial({color: debugObject.color, wireframe: true})
 
-for(let i = 0; i < count * 3 * 3; i++) {
-    positionsArray[i] = (Math.random() - 0.5) * 4;
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+const cubeTweaks = gui.addFolder('Awesome cube');
+
+cubeTweaks.add(mesh.position, 'y').min(-3).max(3).step(0.01).name('elevation');
+cubeTweaks.add(mesh, 'visible');
+cubeTweaks.add(material, 'wireframe');
+cubeTweaks.addColor(debugObject, 'color').onChange(() => {
+    material.color.set(debugObject.color);
+})
+
+debugObject.spin = () => {
+    gsap.to(mesh.rotation, {duration: 1, y: mesh.rotation.y + Math.PI * 2});
 }
 
-const positionAttribute = new THREE.BufferAttribute(positionsArray, 3)
+cubeTweaks.add(debugObject, 'spin');
 
-const geometry = new BufferGeometry();
-geometry.setAttribute('position', positionAttribute);
-const material = new THREE.MeshBasicMaterial({color: 'red', wireframe: true})
-
-// Object
-const mesh = new THREE.Mesh(geometry, material);
-
-scene.add(mesh);
+debugObject.subdivision = 2;
+cubeTweaks.add(debugObject, 'subdivision').min(1).max(20).step(1).onFinishChange(() => {
+    mesh.geometry.dispose();
+    mesh.geometry = new BoxGeometry(1, 1,1, debugObject.subdivision, debugObject.subdivision, debugObject.subdivision);
+});
 
 // Sizes
 const sizes = {
