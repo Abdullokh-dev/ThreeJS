@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import {BoxGeometry} from "three";
+import {BoxGeometry, LoadingManager} from "three";
 import {gsap} from "gsap";
 import GUI from 'lil-gui';
 
@@ -25,6 +25,27 @@ window.addEventListener('keydown', (event) => {
 const debugObject = {};
 
 /**
+ * Texture
+ */
+const loadingManager = new LoadingManager();
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const texture = textureLoader.load('/door.jpg');
+texture.colorSpace = THREE.SRGBColorSpace;
+// texture.repeat.x = 2;
+// texture.repeat.y = 3;
+// texture.wrapS = THREE.MirroredRepeatWrapping;
+// texture.wrapT = THREE.MirroredRepeatWrapping;
+// texture.wrapS = THREE.RepeatWrapping;
+// texture.wrapT = THREE.RepeatWrapping;
+
+// texture.offset.x = 0.5;
+// texture.offset.y = 0.5;
+
+texture.rotation = Math.PI / 4;
+texture.center.x = 0.5;
+texture.center.y = 0.5;
+
+/**
  * Base
  */
 // Canvas
@@ -37,7 +58,7 @@ const scene = new THREE.Scene();
 debugObject.color = '#43731c';
 
 const geometry = new BoxGeometry(1, 1,1, 1);
-const material = new THREE.MeshBasicMaterial({color: debugObject.color, wireframe: true})
+const material = new THREE.MeshBasicMaterial({map: texture});
 
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
