@@ -41,9 +41,13 @@ texture.colorSpace = THREE.SRGBColorSpace;
 // texture.offset.x = 0.5;
 // texture.offset.y = 0.5;
 
-texture.rotation = Math.PI / 4;
-texture.center.x = 0.5;
-texture.center.y = 0.5;
+// texture.rotation = Math.PI / 4;
+// texture.center.x = 0.5;
+// texture.center.y = 0.5;
+
+// texture.generateMipmaps = false;
+// texture.minFilter = THREE.NearestFilter;
+texture.magFilter = THREE.NearestFilter;
 
 /**
  * Base
